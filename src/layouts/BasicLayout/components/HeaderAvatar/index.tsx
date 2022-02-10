@@ -1,0 +1,106 @@
+import * as React from 'react';
+import { Avatar, Overlay, Menu, Icon } from '@alifd/next';
+import { useHistory } from 'ice';
+import styles from './index.module.css';
+
+const { Item } = Menu;
+const { Popup } = Overlay;
+
+export interface Props {
+  name: string;
+  avatar: string;
+  mail: string;
+}
+
+function UserProfile({ name, avatar, mail }) {
+  return (
+    <div className={styles.profile}>
+      <div className={styles.avatar}>
+        <Avatar
+          alt="用户头像"
+          src={avatar}
+        />
+      </div>
+
+      <div className={styles.content}>
+        <h4>{name}</h4>
+
+        <span>{mail}</span>
+      </div>
+    </div>
+  );
+}
+
+function HeaderAvatar(props: Props) {
+  const { name, avatar } = props;
+
+  const history = useHistory();
+
+  function handleMenuClick(key, item, e) {
+    console.log('handleMenuClick', key, item);
+
+    if (key === 'logout') {
+      return;
+    }
+
+    history.push(key);
+  }
+
+  return (
+    <Popup
+      trigger={
+        <div className={styles.headerAvatar}>
+          <Avatar
+            alt="用户头像"
+            size="small"
+            src={avatar}
+          />
+
+          <span style={{ marginLeft: 10 }}>{name}</span>
+        </div>
+      }
+      triggerType="click"
+    >
+      <div className={styles.avatarPopup}>
+        <UserProfile {...props} />
+
+        <Menu
+          className={styles.menu}
+          onItemClick={handleMenuClick}
+        >
+          <Item key="/person">
+            <Icon
+              size="small"
+              type="account"
+            />
+            个人设置
+          </Item>
+
+          <Item key="/setting">
+            <Icon
+              size="small"
+              type="set"
+            />
+            系统设置
+          </Item>
+
+          <Item key="logout">
+            <Icon
+              size="small"
+              type="exit"
+            />
+            退出
+          </Item>
+        </Menu>
+      </div>
+    </Popup>
+  );
+}
+
+HeaderAvatar.defaultProps = {
+  name: 'MyName',
+  mail: 'name@gmail.com',
+  avatar: 'https://img.alicdn.com/tfs/TB1.ZBecq67gK0jSZFHXXa9jVXa-904-826.png',
+};
+
+export default HeaderAvatar;
